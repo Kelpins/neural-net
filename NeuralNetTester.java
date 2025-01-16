@@ -6,8 +6,8 @@ public class NeuralNetTester {
       HashMap<ArrayList<Double>, Double> train = new HashMap<>();
       HashMap<ArrayList<Double>, Double> test = new HashMap<>();
       
-      int trainSize = 5000;
-      int testSize = 2500;
+      int trainSize = 5;
+      int testSize = 2;
       
       for (int i = 0; i < trainSize; i++) {
          
@@ -38,11 +38,11 @@ public class NeuralNetTester {
       layerSizes.add(2);
       layerSizes.add(3);
       
-      NeuralNet2 newNetwork = new NeuralNet2(layerSizes, 0.0000005);
+      NeuralNet2 newNetwork = new NeuralNet2(layerSizes, 0.000000001);
       
       System.out.println(newNetwork.test(test));
       
-      newNetwork.train(train, 20);
+      newNetwork.train(train, 15);
       
       System.out.println(newNetwork.test(test));
 

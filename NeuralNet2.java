@@ -38,6 +38,8 @@ public class NeuralNet2 {
    public void train(HashMap<ArrayList<Double>, Double> trainData, int epochs) {
    
       for (int e = 0; e < epochs; e++) {
+         
+         //System.out.println("epoch " + e);
       
          for (ArrayList<Double> key : trainData.keySet()) {
             
@@ -63,7 +65,7 @@ public class NeuralNet2 {
             currentNode.setActivation(currentNode.getActivation() + inputValues.get(j) * currentNode.getWeight(j));
          
          }
-      
+               
       }
       
       for (int i = 1; i < this.hiddenLayers.size(); i++) {
@@ -99,6 +101,8 @@ public class NeuralNet2 {
       }
       
       actualOut += this.outNode.getBias();
+      
+      //System.out.println("actual: " + actualOut + ", expected: " + expectedOut + ", error: " + (expectedOut-actualOut));
 
       return expectedOut - actualOut;
    
@@ -143,6 +147,8 @@ public class NeuralNet2 {
             currentNode.setError(currentNode.getError() / futureLayer.getNodes().size());
             currentNode.setBias(currentNode.getBias() + this.learningRate * currentNode.getError());
             
+            //System.out.println(currentNode.getError());
+            
             try {
             
                NNLayer previousLayer = this.hiddenLayers.get(i-1);
@@ -153,7 +159,7 @@ public class NeuralNet2 {
                   
                   currentNode.setWeight(k, currentNode.getWeight(k) + this.learningRate * currentNode.getError() * previousNode.getActivation());
                   
-                  previousNode.setError(previousNode.getError() + (currentNode.getError() * currentNode.getWeight(k) * currentNode.getWeight(k) / currentNode.getWeightSum()));
+                  previousNode.setError(previousNode.getError() + (currentNode.getError() * currentNode.getWeight(k)));// * currentNode.getWeight(k) / currentNode.getWeightSum()));
                
                }
             

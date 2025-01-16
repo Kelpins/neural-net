@@ -17,10 +17,10 @@ public class NNNode {
      * @param numWeights The number of inbound weights for this node.
      */
     public NNNode(int numWeights) {
-        this.bias = Math.random() * 0.1;
+        this.bias = Math.random() * 0.05;
         this.weights = new ArrayList<>();
         for (int i = 0; i < numWeights; i++) {
-            this.weights.add(Math.random() * 0.1);
+            this.weights.add(Math.random() * 0.05);
         }
         this.error = 0.0;
         this.activation = 0.0;
