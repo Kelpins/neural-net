@@ -19,6 +19,11 @@ public class NNLayer {
             this.nodes.add(new NNNode(numWeightsPerNode));
         }
     }
+    public NNLayer(List<NNNode> nodes) {
+    
+      this.nodes = nodes;
+    
+    }
 
     /**
      * Gets the list of nodes in this layer.
@@ -28,4 +33,5 @@ public class NNLayer {
     public List<NNNode> getNodes() {
         return nodes;
     }
+    
 }

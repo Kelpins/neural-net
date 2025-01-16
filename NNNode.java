@@ -7,6 +7,9 @@ import java.util.*;
 public class NNNode {
     private double bias;
     private List<Double> weights;
+    private double numWeights;
+    private double error;
+    private double activation;
 
     /**
      * Constructs a NNNode with random bias and weights.
@@ -19,6 +22,9 @@ public class NNNode {
         for (int i = 0; i < numWeights; i++) {
             this.weights.add(Math.random() * 0.1);
         }
+        this.error = 0.0;
+        this.activation = 0.0;
+        this.numWeights = numWeights;
     }
 
     /**
@@ -58,4 +64,49 @@ public class NNNode {
     public void setWeight(int index, double weight) {
         this.weights.set(index, weight);
     }
+    
+    public double getError() {
+    
+      return this.error;
+    
+    }
+    
+    public void setError(double e) {
+    
+      this.error = e;
+    
+    }
+    
+    public void setActivation(double a) {
+    
+      this.activation = a;
+    
+    }
+    
+    public double getActivation() {
+    
+      return this.activation;
+    
+    }
+    
+    public double getWeightSum() {
+    
+      double sum = 0.0;
+    
+      for (double weight : this.weights) {
+      
+         sum += weight;
+      
+      }
+      
+      return sum;
+      
+    }
+    
+    public double getNumWeights() {
+    
+      return this.numWeights;
+    
+    }
+    
 }
