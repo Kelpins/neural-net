@@ -5,7 +5,7 @@ public class NeuralNet2 {
    private ArrayList<NNLayer> hiddenLayers;
    private NNNode outNode;
    private double learningRate;
-
+   
    public NeuralNet2(ArrayList<Integer> layerSizes, double learningRate) {
       
       this.hiddenLayers = new ArrayList<NNLayer>();
@@ -38,9 +38,7 @@ public class NeuralNet2 {
    public void train(HashMap<ArrayList<Double>, Double> trainData, int epochs) {
    
       for (int e = 0; e < epochs; e++) {
-         
-         //System.out.println("epoch " + e);
-      
+               
          for (ArrayList<Double> key : trainData.keySet()) {
             
             double error = feedForward(key, trainData.get(key));
@@ -102,8 +100,6 @@ public class NeuralNet2 {
       
       actualOut += this.outNode.getBias();
       
-      //System.out.println("actual: " + actualOut + ", expected: " + expectedOut + ", error: " + (expectedOut-actualOut));
-
       return expectedOut - actualOut;
    
    }
@@ -144,7 +140,7 @@ public class NeuralNet2 {
          for (int j = 0; j < currentLayer.getNodes().size(); j++) {
          
             NNNode currentNode = currentLayer.getNodes().get(j);
-            currentNode.setError(currentNode.getError() / futureLayer.getNodes().size());
+            //currentNode.setError(currentNode.getError() / futureLayer.getNodes().size());
             currentNode.setBias(currentNode.getBias() + this.learningRate * currentNode.getError());
             
             //System.out.println(currentNode.getError());
