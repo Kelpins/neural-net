@@ -21,7 +21,7 @@ public class NeuralNet2 {
       
    }
    
-   public double test(Map<ArrayList<Double>, Double> testData) {
+   public double test2(Map<ArrayList<Double>, Double> testData) {
    
       double error = 0.0;
       
@@ -34,6 +34,44 @@ public class NeuralNet2 {
       return Math.sqrt(error / testData.size());
           
    }
+   public double test(Map<ArrayList<Double>, Double> testData) {
+      double errorSum = 0;
+      
+      for (ArrayList<Double> key : testData.keySet()) { //for each test val
+         //feed fwd
+         ArrayList<Double> inputs = key;
+         double output = this.outputNode.getBias();
+         
+         List<NNNode2> firstLayerNodes = this.hiddenLayers.get(0).getNodes();
+         
+         for (int i = 0; i < firstLayerNodes.size(); i++) {
+            
+            NNNode2 current = firstLayerNodes.get(i);
+            
+            current.setActivation(current.getBias() + current.getWeight(0) * inputs.get(0) + 
+               current.getWeight(1) * inputs.get(1));
+         }
+         
+         for (int i = 1; i < this.hiddenLayers.size(); i++) {
+            NNLayer2 currentHiddenLayer = this.hiddenLayers.get(i);
+            
+            for (int j = 0; j < numNodesPerLayer; j++) { //each hidden node's activation val
+               
+               NNNode2 node = currentHiddenLayer.getNodes().get(j);
+               
+               node.setActivation(node.getBias() + 
+                  node.getWeight(0)*this.hiddenLayers.get(i-1).getNodes().get(j).getActivation());
+            }
+         }
+         //output = sum of w(each) * allActivations[last][each];
+            for (int a = 0; a < this.hiddenLayers.get(0).getNodes().size(); a++) {
+               output += this.outputNode.getWeight(a) 
+                  * this.hiddenLayers.get(this.hiddenLayers.size()-1).getNodes().get(a).getActivation();
+            }
+         errorSum += Math.pow((testData.get(key) - output), 2); //running sum of squared error
+      }
+      return Math.pow(errorSum/testData.size(), 0.5); //return sqrt of average squared error -> avg error
+    }
    
    public void train(HashMap<ArrayList<Double>, Double> trainData, int epochs) {
    
