@@ -159,8 +159,8 @@ public class NeuralNet2 {
                   
                   currentNode.setWeight(k, currentNode.getWeight(k) + this.learningRate * currentNode.getError() * previousNode.getActivation());
                   
-                  previousNode.setError(previousNode.getError() + (currentNode.getError() * currentNode.getWeight(k)));// * currentNode.getWeight(k) / currentNode.getWeightSum()));
-               
+                  previousNode.setError(previousNode.getError() + (currentNode.getError() * currentNode.getWeight(k)));
+                                 
                }
             
             }
