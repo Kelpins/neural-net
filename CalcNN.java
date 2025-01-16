@@ -1,7 +1,3 @@
-/*
-   DO NOT START CODING THIS FILE UNTIL YOU HAVE COMPLETED AddOneNNTester.java!
-*/
-
 import java.util.*;
 
 /**
@@ -54,7 +50,7 @@ class CalcNN {
          double input = key;
          double output = this.outputNode.getBias();
          
-         double[][] allActivations = new double[this.hiddenLayers.length][numNodesPerLayer];
+         double[][] allActivations = new double[this.hiddenLayers.length+1][numNodesPerLayer];
          for (int k = 0; k < allActivations[0].length; k++) {
             allActivations[0][k] = input; //first layer input layer
          }
@@ -66,15 +62,13 @@ class CalcNN {
                NNNode node = currentHiddenLayer.getNodes().get(j);
                allActivations[i][j] = activationFunction(node.getBias() + node.getWeight(0)*allActivations[i-1][j]);
             }
-         
+         }
          //output = sum of w(each) * allActivations[last][each];
             for (int a = 0; a < allActivations[0].length; a++) {
                output += this.outputNode.getWeight(a) * allActivations[this.hiddenLayers.length - 1][a];
             }
          errorSum += Math.pow((testData.get(key) - output), 2); //running sum of squared error
-            }
       }
-      
       return Math.pow(errorSum/testData.size(), 0.5); //return sqrt of average squared error -> avg error
     }
     private double activationFunction(double value) {
@@ -107,30 +101,44 @@ class CalcNN {
                          calculate the node's error: output error * weight from hidden node to output.
                          update the weight from input to this node to: previous weight + learning rate * node's error * input
                          update the bias for this node to: previous bias + learning rate * node's error
-       */
-      for (int epoch = 0; epoch < epochs; epoch++) {
-         for (Double key : trainingData.keySet()) {
-            //feed fwd
-            double input = key;
-            double output = this.outputNode.getBias();
+       */      
+      
+      for (Double key : trainingData.keySet()) { //for each test val
+         //feed fwd
+         double input = key;
+         double output = this.outputNode.getBias();
+         
+         double[][] allActivations = new double[this.hiddenLayers.length+1][numNodesPerLayer];
+         for (int k = 0; k < allActivations[0].length; k++) {
+            allActivations[0][k] = input; //first layer input layer
+         }
+         
+         for (int i = 1; i < this.hiddenLayers.length+1; i++) {
+            NNLayer currentHiddenLayer = this.hiddenLayers[i-1];
             
-            ArrayList<Double> activations = new ArrayList();
-            
-            for (NNNode node : hiddenLayer.getNodes()) { //each hidden node's activation val
-               activations.add(activationFunction(node.getBias() + node.getWeight(0)*input));
+            for (int j = 0; j < numNodesPerLayer; j++) { //each hidden node's activation val
+               NNNode node = currentHiddenLayer.getNodes().get(j);
+               allActivations[i][j] = activationFunction(node.getBias() + node.getWeight(0)*allActivations[i-1][j]);
             }
-            
-            for (int i = 0; i < activations.size(); i++) { //sum node vals * output weights (+ output bias at start)
-               output += this.outputNode.getWeight(i)*activations.get(i);
+         }
+         //output = sum of w(each) * allActivations[last][each];
+            for (int a = 0; a < allActivations[0].length; a++) {
+               output += this.outputNode.getWeight(a) * allActivations[this.hiddenLayers.length - 1][a];
             }
+         
+         //backprop: adjusting output node values
+         double outputError = trainingData.get(key) - output;
+         this.outputNode.setBias(this.outputNode.getBias() + outputError * this.learningRate); //fix output bias
+         
+         for (int i = 0; i < activations.size(); i++) {
+         
+            NNLayer currentLayer = hiddenLayers[i];
             
-            //backprop: adjusting output node values
-            double outputError = trainingData.get(key) - output;
-            this.outputNode.setBias(this.outputNode.getBias() + outputError * this.learningRate); //fix output bias
+            for (int j = 0; j < currentLayer.getNodes().size(); j++) {
             
-            for (int i = 0; i < activations.size(); i++) {
-               NNNode currentNode = hiddenLayer.getNodes().get(i);
-               this.outputNode.setWeight(i, currentNode.getWeight(0) + outputError * this.learningRate 
+               NNNode currentNode = currentLayer.getNodes().get(j);
+               
+               this.outputNode.setWeight(j, currentNode.getWeight(0) + outputError * this.learningRate 
                   * activations.get(i)); //fix weight btwn output and hidden
                   
                double currentError = outputError * outputNode.getWeight(i); //hidden node error val
@@ -138,31 +146,7 @@ class CalcNN {
                   //fix weight btwn input and hidden
                currentNode.setBias(currentNode.getBias() + this.learningRate * currentError); //fix hidden bias
             }
-          
          }
+
       }
-
     }
-
-    
-    
-    
-   
-   /*
-      Done with training and testing?  Check with your teacher to see if it works correctly!
-      
-      Then, try some optional challenges:
-      
-      1. Adjust your "hyperparameters"! What happens if you increase or decrease: 
-            The learning rate? if above 10^-6, NaN; if below, gets less accurate w/ same amt epochs 
-            The number of neurons in the hidden layer? more neurons, more accurate (if 0, 1500s like no training)
-            The number of epochs?
-            The way biases and weights are initialized in NNNode.java?
-         More specifically, can you get your test error down to 0.5? 0.1? 0.01?
-      
-      2. Add an activation function. Google (or ask ChatGPT) for more information!
-         Note: this requires some calculus to fully understand, but you can use it
-               without understanding the calculus part.
-   */
-    
-}
