@@ -21,6 +21,7 @@ public class NeuralNet2 {
       
    }
    
+   //test function
    public double test2(Map<ArrayList<Double>, Double> testData) {
    
       double error = 0.0;
@@ -34,40 +35,43 @@ public class NeuralNet2 {
       return Math.sqrt(error / testData.size());
           
    }
-   public double test(Map<ArrayList<Double>, Double> testData) {
+   
+   public double test(Map<ArrayList<Double>, Double> testData) { //other test function version (unused)
       double errorSum = 0;
       
       for (ArrayList<Double> key : testData.keySet()) { //for each test val
          //feed fwd
          ArrayList<Double> inputs = key;
-         double output = this.outputNode.getBias();
+         double output = this.outNode.getBias();
          
-         List<NNNode2> firstLayerNodes = this.hiddenLayers.get(0).getNodes();
+         List<NNNode> firstLayerNodes = this.hiddenLayers.get(0).getNodes();
          
          for (int i = 0; i < firstLayerNodes.size(); i++) {
             
-            NNNode2 current = firstLayerNodes.get(i);
+            NNNode current = firstLayerNodes.get(i);
             
             current.setActivation(current.getBias() + current.getWeight(0) * inputs.get(0) + 
-               current.getWeight(1) * inputs.get(1));
+               current.getWeight(1) * inputs.get(1)); //add inputs manually for first layer
          }
          
          for (int i = 1; i < this.hiddenLayers.size(); i++) {
-            NNLayer2 currentHiddenLayer = this.hiddenLayers.get(i);
+            NNLayer currentLayer = this.hiddenLayers.get(i);
             
-            for (int j = 0; j < numNodesPerLayer; j++) { //each hidden node's activation val
+            for (int j = 0; j < currentLayer.getNodes().size(); j++) { //each hidden node's activation val
+               NNNode node = currentLayer.getNodes().get(j);
+               node.setActivation(node.getBias());
                
-               NNNode2 node = currentHiddenLayer.getNodes().get(j);
+               for (int k = 0; k < this.hiddenLayers.get(i-1).getNodes().size(); k++) {
                
-               node.setActivation(node.getBias() + 
-                  node.getWeight(0)*this.hiddenLayers.get(i-1).getNodes().get(j).getActivation());
+                  node.setActivation(node.getActivation() + 
+                     node.getWeight(k)*this.hiddenLayers.get(i-1).getNodes().get(k).getActivation());
+               }
             }
          }
-         //output = sum of w(each) * allActivations[last][each];
-            for (int a = 0; a < this.hiddenLayers.get(0).getNodes().size(); a++) {
-               output += this.outputNode.getWeight(a) 
-                  * this.hiddenLayers.get(this.hiddenLayers.size()-1).getNodes().get(a).getActivation();
-            }
+         for (int a = 0; a < this.hiddenLayers.get(this.hiddenLayers.size()-1).getNodes().size(); a++) {
+            output += this.outNode.getWeight(a) 
+               * this.hiddenLayers.get(this.hiddenLayers.size()-1).getNodes().get(a).getActivation();
+         }
          errorSum += Math.pow((testData.get(key) - output), 2); //running sum of squared error
       }
       return Math.pow(errorSum/testData.size(), 0.5); //return sqrt of average squared error -> avg error
